@@ -3,11 +3,13 @@ package com.sparta.blog.service;
 import com.sparta.blog.dto.BlogRequestDto;
 import com.sparta.blog.dto.BlogResponseDto;
 import com.sparta.blog.entity.Blog;
+import com.sparta.blog.entity.User;
 import com.sparta.blog.repository.BlogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 public class BlogService {
@@ -19,17 +21,16 @@ public class BlogService {
     }
 
 
-    public BlogResponseDto createBlog(BlogRequestDto requestDto) {
+    public BlogResponseDto createBlog(BlogRequestDto requestDto, User user) {
         // RqDto -> Entity
         Blog blog = new Blog(requestDto);
+        blog.setUser(user);
 
         // DB 저장
-        Blog saveBlog = blogRepository.save(blog);
+        blogRepository.save(blog);
 
         // Entity -> RsDto
-        BlogResponseDto blogResponseDto = new BlogResponseDto(blog);
-
-        return blogResponseDto;
+        return new BlogResponseDto(blog);
     }
 
     public List<BlogResponseDto> getBlogs(){
@@ -42,18 +43,26 @@ public class BlogService {
     }
 
     @Transactional
-    public Long updateBlog(Long id, BlogRequestDto requestDto) {
+    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, User user) {
         Blog blog = findblog(id);
-        blog.checkPassword(requestDto.getPassword());
+
+        if(!blog.getUser().equals(user)){
+            throw new RejectedExecutionException();
+        }
+
         blog.update(requestDto);
-        return id;
+
+        return new BlogResponseDto(blog);
     }
 
-    public Long deleteBlog(Long id, BlogRequestDto requestDto) {
+    public void deleteBlog(Long id, User user) {
         Blog blog = findblog(id);
-        blog.checkPassword(requestDto.getPassword());
+
+        if(!blog.getUser().equals(user)){
+            throw new RejectedExecutionException();
+        }
+
         blogRepository.delete(blog);
-        return id;
     }
 
     private Blog findblog(Long id){

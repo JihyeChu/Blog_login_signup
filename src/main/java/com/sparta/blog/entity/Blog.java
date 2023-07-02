@@ -16,19 +16,22 @@ public class Blog extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name="title", nullable = false)
     private String title;
-    @Column(name="username", nullable = false)
-    private String username;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
     @Column(name="password", nullable = false)
     private String password;
+
     @Column(name="contents", nullable = false)
     private String contents;
 
     public Blog(BlogRequestDto requestDto){
         this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
     }
 
@@ -38,12 +41,7 @@ public class Blog extends Timestamped{
 
     }
 
-//  비밀번호 체크
-    public void checkPassword(String password) {
-        if(!getPassword().equals(password)){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
-
 }
+
+
+
