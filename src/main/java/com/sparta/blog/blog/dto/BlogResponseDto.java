@@ -1,10 +1,14 @@
 package com.sparta.blog.blog.dto;
 
 import com.sparta.blog.blog.entity.Blog;
+import com.sparta.blog.comment.dto.CommentResponseDto;
+import com.sparta.blog.comment.entity.Comment;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,6 +20,7 @@ public class BlogResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime modified;
     private String username;
+    private List<CommentResponseDto> commentResponseDto;
 
     public BlogResponseDto(Blog blog) {
         this.id = blog.getId();
@@ -24,6 +29,11 @@ public class BlogResponseDto {
         this.createAt = blog.getCreatedAt();
         this.modified = blog.getModifiedAt();
         this.username = blog.getUser().getUsername();
+        this.commentResponseDto = new ArrayList<>();
+        for(Comment comment : blog.getCommentList()){
+            commentResponseDto.add(new CommentResponseDto(comment));
+        }
+
     }
 
 }

@@ -32,7 +32,7 @@ public class Blog extends Timestamped{
     @JoinColumn(name = "userId")
     private User user;
 
-    @OneToMany(mappedBy = "blog")
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.REMOVE)
     private List<Comment> commentList = new ArrayList<>();
 
     public Blog(BlogRequestDto requestDto){
