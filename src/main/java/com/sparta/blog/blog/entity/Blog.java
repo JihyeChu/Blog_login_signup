@@ -1,10 +1,15 @@
-package com.sparta.blog.entity;
+package com.sparta.blog.blog.entity;
 
-import com.sparta.blog.dto.BlogRequestDto;
+import com.sparta.blog.blog.dto.BlogRequestDto;
+import com.sparta.blog.comment.entity.Comment;
+import com.sparta.blog.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,18 +22,18 @@ public class Blog extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="title", nullable = false)
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
+    private String contents;
 
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
-    @Column(name="password", nullable = false)
-    private String password;
-
-    @Column(name="contents", nullable = false)
-    private String contents;
+    @OneToMany(mappedBy = "blog")
+    private List<Comment> commentList = new ArrayList<>();
 
     public Blog(BlogRequestDto requestDto){
         this.title = requestDto.getTitle();
@@ -38,7 +43,6 @@ public class Blog extends Timestamped{
     public void update(BlogRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-
     }
 
 }

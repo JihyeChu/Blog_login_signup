@@ -1,10 +1,10 @@
-package com.sparta.blog.controller;
+package com.sparta.blog.blog.controller;
 
-import com.sparta.blog.dto.ApiResponseDto;
-import com.sparta.blog.dto.BlogRequestDto;
-import com.sparta.blog.dto.BlogResponseDto;
+import com.sparta.blog.ApiResponseDto;
+import com.sparta.blog.blog.dto.BlogRequestDto;
+import com.sparta.blog.blog.dto.BlogResponseDto;
 import com.sparta.blog.security.UserDetailsImpl;
-import com.sparta.blog.service.BlogService;
+import com.sparta.blog.blog.service.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +57,7 @@ public class BlogController {
 
 //  삭제
     @DeleteMapping("blogs/{id}")
-    public ResponseEntity<ApiResponseDto> deleteBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody BlogRequestDto requestDto){
+    public ResponseEntity<ApiResponseDto> deleteBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
         try {
             blogService.deleteBlog(id, userDetails.getUser());
             return ResponseEntity.ok().body(new ApiResponseDto("삭제 성공", HttpStatus.OK.value()));

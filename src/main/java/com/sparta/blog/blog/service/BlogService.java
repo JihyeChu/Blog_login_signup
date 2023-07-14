@@ -1,10 +1,10 @@
-package com.sparta.blog.service;
+package com.sparta.blog.blog.service;
 
-import com.sparta.blog.dto.BlogRequestDto;
-import com.sparta.blog.dto.BlogResponseDto;
-import com.sparta.blog.entity.Blog;
-import com.sparta.blog.entity.User;
-import com.sparta.blog.repository.BlogRepository;
+import com.sparta.blog.blog.dto.BlogRequestDto;
+import com.sparta.blog.blog.dto.BlogResponseDto;
+import com.sparta.blog.blog.entity.Blog;
+import com.sparta.blog.user.entity.User;
+import com.sparta.blog.blog.repository.BlogRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,15 +38,15 @@ public class BlogService {
     }
 
     public BlogResponseDto getBlog(Long id) {
-        Blog blog = findblog(id);
+        Blog blog = findBlog(id);
         return new BlogResponseDto(blog);
     }
 
     @Transactional
     public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, User user) {
-        Blog blog = findblog(id);
+        Blog blog = findBlog(id);
 
-        if(!blog.getUser().equals(user)){
+        if(!user.getUsername().equals(blog.getUser().getUsername())){
             throw new RejectedExecutionException();
         }
 
@@ -56,7 +56,7 @@ public class BlogService {
     }
 
     public void deleteBlog(Long id, User user) {
-        Blog blog = findblog(id);
+        Blog blog = findBlog(id);
 
         if(!blog.getUser().equals(user)){
             throw new RejectedExecutionException();
@@ -65,10 +65,12 @@ public class BlogService {
         blogRepository.delete(blog);
     }
 
-    private Blog findblog(Long id){
+    public Blog findBlog(Long id){
         return blogRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("선택한 메모는 존재하지 않습니다.")
         );
     }
+
+
 
 }

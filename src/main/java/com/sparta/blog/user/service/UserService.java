@@ -1,10 +1,11 @@
-package com.sparta.blog.service;
+package com.sparta.blog.user.service;
 
-import com.sparta.blog.dto.LoginRequestDto;
-import com.sparta.blog.dto.SignupRequestDto;
-import com.sparta.blog.entity.User;
-import com.sparta.blog.jwt.JwtUtil;
-import com.sparta.blog.repository.UserRepository;
+import com.sparta.blog.security.dto.LoginRequestDto;
+import com.sparta.blog.user.dto.SignupRequestDto;
+import com.sparta.blog.user.entity.User;
+import com.sparta.blog.security.jwt.JwtUtil;
+import com.sparta.blog.user.entity.UserRoleEnum;
+import com.sparta.blog.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class UserService {
     public void signup(SignupRequestDto requestDto){
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
+        UserRoleEnum role = requestDto.getRole();
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
@@ -33,8 +35,9 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
+
         // 사용자 등록
-        User user = new User(username, password);
+        User user = new User(username, password, role);
         userRepository.save(user);
 
     }

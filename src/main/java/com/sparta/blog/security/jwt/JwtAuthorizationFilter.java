@@ -1,4 +1,4 @@
-package com.sparta.blog.jwt;
+package com.sparta.blog.security.jwt;
 
 import com.sparta.blog.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;

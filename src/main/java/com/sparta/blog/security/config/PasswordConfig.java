@@ -1,4 +1,4 @@
-package com.sparta.blog.config;
+package com.sparta.blog.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

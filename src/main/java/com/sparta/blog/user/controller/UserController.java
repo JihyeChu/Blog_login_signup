@@ -1,12 +1,13 @@
-package com.sparta.blog.controller;
+package com.sparta.blog.user.controller;
 
-import com.sparta.blog.dto.ApiResponseDto;
-import com.sparta.blog.dto.LoginRequestDto;
-import com.sparta.blog.dto.SignupRequestDto;
-import com.sparta.blog.jwt.JwtUtil;
-import com.sparta.blog.service.UserService;
+import com.sparta.blog.ApiResponseDto;
+import com.sparta.blog.security.dto.LoginRequestDto;
+import com.sparta.blog.user.dto.SignupRequestDto;
+import com.sparta.blog.security.jwt.JwtUtil;
+import com.sparta.blog.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,15 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-
-    public UserController(UserService userService, JwtUtil jwtUtil) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
 
     @PostMapping("/user/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody @Valid SignupRequestDto requestDto) {
@@ -39,7 +36,7 @@ public class UserController {
         userService.login(requestDto);
 
         // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(requestDto.getUsername()));
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(requestDto.getUsername(), requestDto.getRole()));
 
         return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));
     }
