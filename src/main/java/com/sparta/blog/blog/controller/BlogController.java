@@ -5,6 +5,7 @@ import com.sparta.blog.blog.dto.BlogRequestDto;
 import com.sparta.blog.blog.dto.BlogResponseDto;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.blog.service.BlogService;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,29 @@ public class BlogController {
         }catch (RejectedExecutionException e){
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    // 좋아요 생성
+    @PostMapping("/blogs/{id}/like")
+    public ResponseEntity<ApiResponseDto> likeBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
+        try{
+            blogService.likeBlog(id, userDetails.getUser());
+        }catch (DuplicateRequestException e){
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("게시글 좋아요 성공", HttpStatus.ACCEPTED.value()));
+    }
+
+    // 좋아요 취소
+    @DeleteMapping("/blogs/{id}/like")
+    public ResponseEntity<ApiResponseDto> dislikeBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
+        try{
+            blogService.dislikeBlog(id, userDetails.getUser());
+
+        }catch(DuplicateRequestException e){
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("게시글 좋아요 취소 성공", HttpStatus.ACCEPTED.value()));
     }
 
 }

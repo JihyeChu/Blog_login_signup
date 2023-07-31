@@ -17,6 +17,7 @@ public class BlogResponseDto {
     private Long id;
     private String title;
     private String contents;
+    private Integer likeCount;
     private LocalDateTime createAt;
     private LocalDateTime modified;
     private String username;
@@ -26,6 +27,7 @@ public class BlogResponseDto {
         this.id = blog.getId();
         this.title = blog.getTitle();
         this.contents = blog.getContents();
+        this.likeCount = blog.getLike().size();
         this.createAt = blog.getCreatedAt();
         this.modified = blog.getModifiedAt();
         this.username = blog.getUser().getUsername();
