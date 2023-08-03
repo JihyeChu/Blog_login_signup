@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name="like_tb")
-public class Like {
+public class BlogLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Like {
     @JoinColumn(name="blog_id")
     private Blog blog;
 
-    public Like(User user, Blog blog){
+    public BlogLike(User user, Blog blog){
         this.user = user;
         this.blog = blog;
     }

@@ -2,6 +2,7 @@ package com.sparta.blog.comment.service;
 
 import com.sparta.blog.comment.dto.CommentRequestDto;
 import com.sparta.blog.comment.dto.CommentResponseDto;
+import com.sparta.blog.comment.entity.Comment;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.user.entity.User;
 
@@ -32,4 +33,19 @@ public interface CommentService {
     * */
     void deleteComment(Long commentId, User user);
 
+    /*
+    * 댓글 좋아요
+    * @param id : 좋아요 할 댓글 id
+    * @param user : 댓글을 좋아요 할 유저
+    * */
+    void likeComment(Long commentId, User user);
+
+    /*
+     * 댓글 좋아요 취소
+     * @param id : 좋아요 취소 할 댓글 id
+     * @param user : 댓글을 좋아요 취소 할 유저
+     * */
+    void deleteLikeComment(Long commentId, User user);
+
+    Comment findComment(Long id);
 }

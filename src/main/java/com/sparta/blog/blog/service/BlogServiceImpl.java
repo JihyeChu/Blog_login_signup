@@ -5,7 +5,7 @@ import com.sparta.blog.blog.dto.BlogResponseDto;
 import com.sparta.blog.blog.entity.Blog;
 import com.sparta.blog.blog.repository.BlogLikeRepository;
 import com.sparta.blog.blog.repository.BlogRepository;
-import com.sparta.blog.like.entity.Like;
+import com.sparta.blog.like.entity.BlogLike;
 import com.sparta.blog.user.entity.User;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
@@ -79,7 +79,7 @@ public class BlogServiceImpl implements BlogService{
         if(blogLikeRepository.existsByUserAndBlog(user, blog)){
             throw new DuplicateRequestException("이미 좋아요 한 게시글 입니다.");
         }else{
-            Like like = new Like(user, blog);
+            BlogLike like = new BlogLike(user, blog);
             blogLikeRepository.save(like);
         }
     }
@@ -87,7 +87,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public void dislikeBlog(Long id, User user){
         Blog blog = findBlog(id);
-        Optional<Like> likeOptional = blogLikeRepository.findByUserAndBlog(user, blog);
+        Optional<BlogLike> likeOptional = blogLikeRepository.findByUserAndBlog(user, blog);
         if(likeOptional.isPresent()){
             blogLikeRepository.delete(likeOptional.get());
         }else{

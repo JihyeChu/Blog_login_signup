@@ -5,6 +5,7 @@ import com.sparta.blog.comment.dto.CommentRequestDto;
 import com.sparta.blog.comment.dto.CommentResponseDto;
 import com.sparta.blog.comment.service.CommentService;
 import com.sparta.blog.security.UserDetailsImpl;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,28 @@ public class CommentController {
         }catch (RejectedExecutionException e){
             return ResponseEntity.badRequest().body(new ApiResponseDto("작성자만 삭제 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
         }
+    }
+
+    // 댓글 좋아요
+    @PostMapping("/comments/{id}/like")
+    public ResponseEntity<ApiResponseDto> likeComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
+        try{
+            commentService.likeComment(id, userDetails.getUser());
+        }catch (DuplicateRequestException e){
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("댓글 좋아요 성공", HttpStatus.ACCEPTED.value()));
+    }
+
+    // 댓글 좋아요 취소
+    @DeleteMapping("/comments/{id}/like")
+    public ResponseEntity<ApiResponseDto> deleteLikeComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
+        try{
+            commentService.deleteLikeComment(id, userDetails.getUser());
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("댓글 좋아요 취소 성공", HttpStatus.ACCEPTED.value()));
     }
 
 }

@@ -2,7 +2,7 @@ package com.sparta.blog.blog.entity;
 
 import com.sparta.blog.blog.dto.BlogRequestDto;
 import com.sparta.blog.comment.entity.Comment;
-import com.sparta.blog.like.entity.Like;
+import com.sparta.blog.like.entity.BlogLike;
 import com.sparta.blog.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class Blog extends Timestamped{
     private List<Comment> commentList = new ArrayList<>();
 
     @OneToMany(mappedBy = "blog", cascade = CascadeType.REMOVE)
-    private List<Like> like = new ArrayList<>();
+    private List<BlogLike> like = new ArrayList<>();
 
     public Blog(BlogRequestDto requestDto){
         this.title = requestDto.getTitle();
