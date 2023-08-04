@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -49,26 +48,14 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     @Transactional
-    public BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, User user) {
-        Blog blog = findBlog(id);
-
-        if(!user.getUsername().equals(blog.getUser().getUsername())){
-            throw new RejectedExecutionException();
-        }
-
+    public BlogResponseDto updateBlog(Blog blog, BlogRequestDto requestDto, User user) {
         blog.update(requestDto);
 
         return new BlogResponseDto(blog);
     }
 
     @Override
-    public void deleteBlog(Long id, User user) {
-        Blog blog = findBlog(id);
-
-        if(!blog.getUser().equals(user)){
-            throw new RejectedExecutionException();
-        }
-
+    public void deleteBlog(Blog blog, User user) {
         blogRepository.delete(blog);
     }
 

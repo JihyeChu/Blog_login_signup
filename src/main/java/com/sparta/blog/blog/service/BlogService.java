@@ -37,14 +37,14 @@ public interface BlogService {
     * @param user : 게시글 수정 요청자
     * @return : 수정된 게시글 정보
     * */
-    BlogResponseDto updateBlog(Long id, BlogRequestDto requestDto, User user);
+    BlogResponseDto updateBlog(Blog blog, BlogRequestDto requestDto, User user);
 
     /*
     * 게시글 삭제
     * @param id : 삭제 할 해당 게시글 id
     * @param user : 게시글 삭제 요청자
     * */
-    void deleteBlog(Long id, User user);
+    void deleteBlog(Blog blog, User user);
 
     /*
     * 게시글 좋아요

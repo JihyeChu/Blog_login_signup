@@ -15,7 +15,7 @@ public interface CommentService {
     * @param requestDto : 댓글 생성 요청정보
     * @return : 생성된 댓글 정보
     * */
-    CommentResponseDto createComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails);
+    CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails);
 
     /*
     * 댓글 수정
@@ -24,14 +24,14 @@ public interface CommentService {
     * @param user : 댓글을 수정할 유저
     * @return : 수정된 댓글 정보
     * */
-    CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, User user);
+    CommentResponseDto updateComment(Comment comment, CommentRequestDto requestDto);
 
     /*
     * 댓글 삭제
     * @param id : 삭제 할 댓글 id
     * @param user : 댓글을 삭제 할 유저
     * */
-    void deleteComment(Long commentId, User user);
+    void deleteComment(Comment comment, User user);
 
     /*
     * 댓글 좋아요

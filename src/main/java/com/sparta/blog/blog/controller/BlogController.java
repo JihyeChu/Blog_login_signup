@@ -3,6 +3,7 @@ package com.sparta.blog.blog.controller;
 import com.sparta.blog.ApiResponseDto;
 import com.sparta.blog.blog.dto.BlogRequestDto;
 import com.sparta.blog.blog.dto.BlogResponseDto;
+import com.sparta.blog.blog.entity.Blog;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.blog.service.BlogService;
 import com.sun.jdi.request.DuplicateRequestException;
@@ -33,7 +34,6 @@ public class BlogController {
 //  전체조회
     @GetMapping("/blogs")
     public List<BlogResponseDto> getBlogs(){
-
         return blogService.getBlogs();
     }
 
@@ -48,7 +48,8 @@ public class BlogController {
     @PutMapping( "/blogs/{id}")
     public ResponseEntity<BlogResponseDto> updateBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody BlogRequestDto requestDto){
        try {
-           BlogResponseDto result = blogService.updateBlog(id, requestDto, userDetails.getUser());
+           Blog blog = blogService.findBlog(id);
+           BlogResponseDto result = blogService.updateBlog(blog, requestDto, userDetails.getUser());
            return ResponseEntity.ok().body(result);
        }catch (RejectedExecutionException e){
            return ResponseEntity.badRequest().build();
@@ -60,7 +61,8 @@ public class BlogController {
     @DeleteMapping("blogs/{id}")
     public ResponseEntity<ApiResponseDto> deleteBlog(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id){
         try {
-            blogService.deleteBlog(id, userDetails.getUser());
+            Blog blog = blogService.findBlog(id);
+            blogService.deleteBlog(blog, userDetails.getUser());
             return ResponseEntity.ok().body(new ApiResponseDto("삭제 성공", HttpStatus.OK.value()));
         }catch (RejectedExecutionException e){
             return ResponseEntity.badRequest().build();

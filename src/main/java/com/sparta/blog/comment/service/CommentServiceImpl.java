@@ -1,7 +1,7 @@
 package com.sparta.blog.comment.service;
 
 import com.sparta.blog.blog.entity.Blog;
-import com.sparta.blog.blog.repository.BlogRepository;
+import com.sparta.blog.blog.service.BlogService;
 import com.sparta.blog.comment.dto.CommentRequestDto;
 import com.sparta.blog.comment.dto.CommentResponseDto;
 import com.sparta.blog.comment.entity.Comment;
@@ -10,29 +10,25 @@ import com.sparta.blog.like.entity.CommentLike;
 import com.sparta.blog.like.repository.CommentLikeRepository;
 import com.sparta.blog.security.UserDetailsImpl;
 import com.sparta.blog.user.entity.User;
-import com.sparta.blog.user.entity.UserRoleEnum;
 import com.sun.jdi.request.DuplicateRequestException;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.concurrent.RejectedExecutionException;
 
 @Service
-@RequriedArgsConstructor
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService{
 
-    private final BlogRepository blogRepository;
+    private final BlogService blogService;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     @Override
-    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         // dto -> entity
-        Blog blog = blogRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("찾을 수 없습니다."));
+        Blog blog = blogService.findBlog(requestDto.getBlogId());
         Comment comment = new Comment(requestDto, userDetails, blog);
         commentRepository.save(comment);
         return new CommentResponseDto(comment);
@@ -40,25 +36,13 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, User user) {
-        Comment comment = findComment(commentId);
-
-        if(!user.getRole().equals(UserRoleEnum.ADMIN) && !comment.getUser().getUsername().equals(user.getUsername())){
-            throw new RejectedExecutionException();
-        }
-
+    public CommentResponseDto updateComment(Comment comment, CommentRequestDto requestDto) {
         comment.update(requestDto);
         return new CommentResponseDto(comment);
     }
 
     @Override
-    public void deleteComment(Long commentId, User user) {
-        Comment comment = findComment(commentId);
-
-        if(!user.getRole().equals(UserRoleEnum.ADMIN) && !comment.getUser().getUsername().equals(user.getUsername())){
-            throw new RejectedExecutionException();
-        }
-
+    public void deleteComment(Comment comment, User user) {
         commentRepository.delete(comment);
     }
 
